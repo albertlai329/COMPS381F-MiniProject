@@ -32,7 +32,7 @@ var user = {
 app.get('/', function(req,res) {
     res.render('login');
 });
-app.post('/login',function(req,res) {
+app.get('/login',(req,res) {
     res.redirect('/list');
 });
 
@@ -75,7 +75,6 @@ console.log(restaurant.name);
        res.render('restaurant.ejs', {restaurant : doc})
    })
   });
-
 });
 
 app.get('/update/:name',(req,res) => {
@@ -98,9 +97,7 @@ app.get('/delete',(req,res) => {
     res.render('delete');
 });
 
-
 //get the list page
-
 app.get('/list',(req,res) => {
  const client = new MongoClient(mongourl);
        client.connect((err) => {
@@ -113,11 +110,9 @@ app.get('/list',(req,res) => {
   });
 });
 
-
 app.get('/upload',(req,res) => {
     res.render('upload');
 });
-
 
 //create restaurant documents
 app.post('/upload', function(req,res){
@@ -145,20 +140,15 @@ app.post('/upload', function(req,res){
   res.redirect('/list');  
 });
 
-
-
 //Display the restaurant record
-
 app.get('/restaurant/:name', function(req, res) {
      let listname = req.params.name;
       const client = new MongoClient(mongourl);
        client.connect((err) => {
        assert.equal(null,err);
        const db = client.db(dbName);
-
    let cursor = db.collection('restaurant').find({'name' : listname });
-   
-        cursor.toArray((err,doc) => {
+          cursor.toArray((err,doc) => {
 res.render('restaurant.ejs', {restaurant : doc})
 })
  });
@@ -186,7 +176,6 @@ app.post('/createac', function(req,res){
    res.redirect('/');
 });
 
-
 //Delete Restaurant record
 app.get('/delete/:name', function(req,res){
 let listname = req.params.name;
@@ -199,7 +188,6 @@ console.log("start delete",listname );
 	db.collection('restaurant').deleteOne({'name' : listname });
 	});
  res.redirect('/delete');
-
 });
 
 //Update the restaurant
@@ -223,8 +211,6 @@ console.log("start update",listname );
             console.log("Connected successfully to mongodb server");
             const db = client.db(dbName);
      console.log(restaurant.name,restaurant.borough,restaurant.cuisine,restaurant.street,restaurant.building, );
-
-
 	db.collection('restaurant').updateOne({'name' : listname },
 		{$set : {
               	'borough'   :  restaurant.borough ,      
@@ -239,7 +225,6 @@ console.log("start update",listname );
 });	
  res.redirect('/list');
 });
-
 
 //Rate the restaurant
 app.post('/rate/:name', function(req,res){
@@ -256,8 +241,7 @@ app.post('/rate/:name', function(req,res){
 console.log(restaurant.rate );
             db.collection('restaurant').updateOne({'name' : listname},  {$set: {'rate' : restaurant.rate } });
                 assert.equal(err, null);
-                console.log("rate updated.");
-                
+                console.log("rate updated.");             
         });
     });
   res.redirect('/list');
