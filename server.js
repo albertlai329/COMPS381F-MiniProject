@@ -21,7 +21,7 @@ var restaurant = {
       latitude : '',
       longitude : '',
       owner : '' ,
-	rate: ''
+      rate: ''
 };
 
 var user = {
@@ -32,7 +32,9 @@ var user = {
 app.get('/', function(req,res) {
     res.render('login');
 });
-
+app.post('/login',function(req,res) {
+    res.redirect('/list');
+});
 
 app.get('/createac', function(req,res) {
     res.render('createac');
@@ -77,26 +79,20 @@ console.log(restaurant.name);
 });
 
 app.get('/update/:name',(req,res) => {
-     let listname = req.params.name;
-    console.log("start",listname );
-      const client = new MongoClient(mongourl);
-       client.connect((err) => {
-       assert.equal(null,err);
-       console.log("Connected successfully to mongodb server");
-       const db = client.db(dbName);
-
-   let cursor = db.collection('restaurant').find({'name' : listname });
-   
-        cursor.toArray((err,doc) => {
-         console.log(`No. of document to render : ${doc.length}`)
-res.render('update.ejs', {restaurant : doc})
-})
+  let listname = req.params.name;
+  console.log("start",listname );
+  const client = new MongoClient(mongourl);
+  client.connect((err) => {
+  assert.equal(null,err);
+  console.log("Connected successfully to mongodb server");
+  const db = client.db(dbName);
+  let cursor = db.collection('restaurant').find({'name' : listname });
+  cursor.toArray((err,doc) => {
+  console.log(`No. of document to render : ${doc.length}`)
+   res.render('update.ejs', {restaurant : doc})
+  })
  });
 });
-
-
-
-
 
 app.get('/delete',(req,res) => {
     res.render('delete');
